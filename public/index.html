@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dungeon Escape — 2인 협동 탈출</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ══ LOBBY ═══════════════════════════════════════════════ -->
+  <div id="screen-lobby" class="screen">
+    <div class="lobby-card">
+      <h1 class="title">DUNGEON<br>ESCAPE</h1>
+      <p class="subtitle">2인 협동 탈출 게임</p>
+      <div class="form-group">
+        <label for="input-nickname">닉네임</label>
+        <input type="text" id="input-nickname" maxlength="20" placeholder="Player" value="Player" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="input-room">방 코드 (비우면 자동 생성)</label>
+        <input type="text" id="input-room" maxlength="8" placeholder="XXXX" autocomplete="off">
+      </div>
+      <button class="btn-primary" id="btn-join">입장하기</button>
+      <p class="hint">같은 방 코드를 친구와 공유하면 함께 입장됩니다</p>
+    </div>
+  </div>
+
+  <!-- ══ WAITING ══════════════════════════════════════════════ -->
+  <div id="screen-waiting" class="screen hidden">
+    <div class="waiting-card">
+      <div class="spinner"></div>
+      <h2>상대방을 기다리는 중...</h2>
+      <div class="room-info">
+        <span class="room-label">방 코드</span>
+        <span class="room-code" id="display-room-code">----</span>
+      </div>
+      <div class="invite-section">
+        <input type="text" id="display-invite-link" readonly>
+        <button class="btn-secondary" id="btn-copy-link">링크 복사</button>
+      </div>
+      <p id="copy-feedback" class="copy-feedback hidden">클립보드에 복사됐습니다!</p>
+    </div>
+  </div>
+
+  <!-- ══ COUNTDOWN ═════════════════════════════════════════════ -->
+  <div id="screen-countdown" class="screen hidden">
+    <div class="countdown-wrap">
+      <p class="countdown-label">게임 시작!</p>
+      <div class="countdown-text" id="countdown-number">3</div>
+    </div>
+  </div>
+
+  <!-- 역할 인트로 오버레이 -->
+  <div id="role-intro-overlay" class="role-intro-overlay hidden">
+    <div class="role-intro-card" id="role-intro-card">
+      <div class="role-intro-icon" id="role-intro-icon">🗡️</div>
+      <div class="role-intro-name" id="role-intro-name">탐험가</div>
+      <div class="role-intro-desc" id="role-intro-desc">던전을 탐험하고 함정을 피해 출구로 탈출하세요!</div>
+    </div>
+  </div>
+
+  <!-- ══ GAME ══════════════════════════════════════════════════ -->
+  <div id="screen-game" class="screen hidden">
+
+    <!-- Explorer view: canvas 80% LEFT, chat 20% RIGHT -->
+    <div id="explorer-view" class="game-layout hidden">
+      <div class="game-canvas-area" id="explorer-canvas-area">
+        <div id="phaser-container-explorer"></div>
+        <div id="hp-display" class="hp-display"></div>
+        <div id="timer-display" class="timer-display">0:00</div>
+        <div id="key-count" class="key-count"></div>
+        <div id="fusion-overlay" class="fusion-overlay hidden">
+          <div class="fusion-text">FUSION!</div>
+          <div class="fusion-sub">문이 열렸습니다!</div>
+        </div>
+        <div class="controls-hint">WASD / 방향키로 이동</div>
+        <!-- ── 모바일 D-패드 ── -->
+        <div id="dpad" class="dpad">
+          <button class="dpad-btn dpad-up"    data-dx="0"  data-dy="-1">▲</button>
+          <button class="dpad-btn dpad-left"  data-dx="-1" data-dy="0">◀</button>
+          <button class="dpad-btn dpad-right" data-dx="1"  data-dy="0">▶</button>
+          <button class="dpad-btn dpad-down"  data-dx="0"  data-dy="1">▼</button>
+        </div>
+      </div>
+      <div class="chat-panel">
+        <div class="chat-role-badge explorer-badge">탐험가 (Explorer)</div>
+        <div class="chat-log" id="chat-log-explorer"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input-explorer" placeholder="메시지 입력... (Enter)" maxlength="200">
+          <button class="btn-chat" id="chat-send-explorer">전송</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Oracle view: chat 20% LEFT, canvas 80% RIGHT -->
+    <div id="oracle-view" class="game-layout hidden">
+      <div class="chat-panel">
+        <div class="chat-role-badge oracle-badge">예언자 (Oracle)</div>
+        <div class="chat-log" id="chat-log-oracle"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input-oracle" placeholder="메시지 입력... (Enter)" maxlength="200">
+          <button class="btn-chat" id="chat-send-oracle">전송</button>
+        </div>
+      </div>
+      <div class="game-canvas-area" id="oracle-canvas-area">
+        <div id="phaser-container-oracle"></div>
+        <div id="oracle-hud" class="oracle-hud">
+          <span class="oracle-hud-label">탐험가 상태</span>
+          <span id="oracle-hp">♥♥♥</span>
+          <span id="oracle-keys">🗝 0</span>
+          <span id="timer-display-oracle" class="timer-display-oracle">0:00</span>
+        </div>
+        <div class="lever-panel">
+          <div class="lever-title">기믹 제어판</div>
+          <div class="lever-buttons">
+            <button class="lever-btn" id="lever-A" data-lever="A">A<br><small class="lever-hint">위쪽 문 ① [1]</small></button>
+            <button class="lever-btn" id="lever-B" data-lever="B">B<br><small class="lever-hint">위쪽 문 ② [2]</small></button>
+            <button class="lever-btn" id="lever-C" data-lever="C">C<br><small class="lever-hint">아래 문 ① [3]</small></button>
+            <button class="lever-btn" id="lever-D" data-lever="D">D<br><small class="lever-hint">융합 조건 [4]</small></button>
+          </div>
+        </div>
+        <div id="fusion-overlay-oracle" class="fusion-overlay hidden">
+          <div class="fusion-text">FUSION!</div>
+          <div class="fusion-sub">C·D 문이 열렸습니다!</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ CLEAR ══════════════════════════════════════════════════ -->
+  <div id="screen-clear" class="screen hidden">
+    <div class="result-card">
+      <div class="result-icon">🏆</div>
+      <h2 class="result-title clear-title">DUNGEON CLEAR!</h2>
+      <p class="result-subtitle">두 플레이어의 협력으로 탈출에 성공했습니다!</p>
+      <div class="result-time">소요 시간: <span id="clear-time">--</span>초</div>
+      <button class="btn-primary" id="btn-restart-clear">다시하기</button>
+    </div>
+  </div>
+
+  <!-- ══ GAME OVER ═══════════════════════════════════════════════ -->
+  <div id="screen-gameover" class="screen hidden">
+    <div class="result-card">
+      <div class="result-icon">💀</div>
+      <h2 class="result-title gameover-title">GAME OVER</h2>
+      <p class="result-subtitle">함정에 걸려 탈출에 실패했습니다...</p>
+      <button class="btn-primary" id="btn-restart-gameover">다시하기</button>
+    </div>
+  </div>
+
+  <!-- ══ DISCONNECT OVERLAY ══════════════════════════════════════ -->
+  <div id="overlay-disconnected" class="overlay hidden">
+    <div class="overlay-card">
+      <div class="result-icon">🔌</div>
+      <h2>상대방 연결이 끊겼습니다</h2>
+      <p>게임을 다시 시작해주세요.</p>
+      <button class="btn-primary" id="btn-restart-disc">다시 시작</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="phaser.min.js"></script>
+  <script src="vfx.js"></script>
+  <script src="game.js"></script>
+
+</body>
+</html>
