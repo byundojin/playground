@@ -1,0 +1,517 @@
+/* ═══════════════════════════════════════════════════════════════
+   Dungeon Escape — style.css
+   팔레트: GDD §7 기준
+═══════════════════════════════════════════════════════════════ */
+
+/* ─── Reset & Base ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #0a0a0a;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ─── Screen & Overlay Management ───────────────────────────── */
+.screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.screen.hidden  { display: none !important; }
+.overlay        { position: fixed; inset: 0; z-index: 100;
+                  background: rgba(0,0,0,0.78);
+                  display: flex; align-items: center; justify-content: center; }
+.overlay.hidden { display: none !important; }
+
+/* ─── Lobby ─────────────────────────────────────────────────── */
+#screen-lobby {
+  background: radial-gradient(ellipse at center, #180a2a 0%, #0a0a0a 70%);
+}
+
+.lobby-card {
+  background: rgba(18, 8, 36, 0.94);
+  border: 1px solid #3a2060;
+  border-radius: 14px;
+  padding: 44px 52px;
+  width: 420px;
+  max-width: 95vw;
+  text-align: center;
+  box-shadow: 0 0 80px rgba(102,0,204,0.25), 0 4px 24px rgba(0,0,0,0.6);
+}
+
+.title {
+  font-size: 3.2rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  color: #aa88ff;
+  text-shadow: 0 0 24px rgba(170,136,255,0.65);
+  line-height: 1.05;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  color: #7a6a9a;
+  font-size: 0.85rem;
+  margin-bottom: 34px;
+  letter-spacing: 0.08em;
+}
+
+.form-group       { text-align: left; margin-bottom: 18px; }
+.form-group label {
+  display: block;
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: #7a6a9a; margin-bottom: 7px;
+}
+.form-group input {
+  width: 100%;
+  background: #0e0620;
+  border: 1px solid #3a2060;
+  border-radius: 7px;
+  padding: 11px 14px;
+  color: #e0e0e0;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.form-group input:focus {
+  border-color: #6600cc;
+  box-shadow: 0 0 0 2px rgba(102,0,204,0.28);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6600cc 0%, #4400aa 100%);
+  border: none; border-radius: 8px;
+  color: #fff; font-size: 1.05rem; font-weight: 700;
+  cursor: pointer; margin-top: 6px; letter-spacing: 0.06em;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(102,0,204,0.35);
+}
+.btn-primary:hover  { background: linear-gradient(135deg, #7800ee 0%, #5500cc 100%); }
+.btn-primary:active { transform: scale(0.98); }
+
+.hint {
+  font-size: 0.73rem; color: #4a3a6a;
+  margin-top: 18px; line-height: 1.5;
+}
+
+/* ─── Waiting ────────────────────────────────────────────────── */
+#screen-waiting {
+  background: radial-gradient(ellipse at center, #080e18 0%, #0a0a0a 70%);
+}
+
+.waiting-card {
+  background: rgba(8,14,28,0.94);
+  border: 1px solid #183060;
+  border-radius: 14px;
+  padding: 44px 52px;
+  width: 480px; max-width: 95vw;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(0,170,255,0.1);
+}
+
+.waiting-card h2 {
+  font-size: 1.3rem; color: #7ab4e0;
+  margin: 22px 0 18px; letter-spacing: 0.02em;
+}
+
+.spinner {
+  width: 50px; height: 50px;
+  border: 4px solid #183060; border-top-color: #00aaff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.room-info {
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px; margin: 14px 0 18px;
+}
+.room-label { font-size: 0.72rem; color: #7a8aaa; text-transform: uppercase; letter-spacing: 0.08em; }
+.room-code  { font-size: 2.2rem; font-weight: 900; color: #00aaff; letter-spacing: 0.22em; font-family: monospace; }
+
+.invite-section { display: flex; gap: 8px; margin: 10px 0; }
+.invite-section input {
+  flex: 1; background: #0a1220; border: 1px solid #183060;
+  border-radius: 6px; padding: 8px 12px; color: #7a8aaa;
+  font-size: 0.78rem; outline: none;
+  -webkit-user-select: text; user-select: text;
+}
+
+.btn-secondary {
+  padding: 8px 16px; background: #183060; border: 1px solid #2a5080;
+  border-radius: 6px; color: #7ab4e0; font-size: 0.82rem;
+  cursor: pointer; white-space: nowrap; transition: background 0.2s;
+}
+.btn-secondary:hover { background: #2a4070; }
+
+.copy-feedback { font-size: 0.78rem; color: #00ff88; margin-top: 10px; min-height: 1em; }
+
+/* ─── Countdown ──────────────────────────────────────────────── */
+#screen-countdown {
+  background: #0a0a0a;
+}
+.countdown-wrap { text-align: center; }
+.countdown-label {
+  font-size: 1rem; color: #7a6a9a; letter-spacing: 0.25em;
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.countdown-text {
+  font-size: 9rem; font-weight: 900; color: #aa88ff;
+  text-shadow: 0 0 70px rgba(170,136,255,0.8);
+  animation: cd-pulse 1s ease-out;
+  line-height: 1;
+}
+@keyframes cd-pulse {
+  0%   { transform: scale(1.4); opacity: 0.5; }
+  60%  { transform: scale(0.95); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* ─── Game Screen ────────────────────────────────────────────── */
+#screen-game {
+  align-items: stretch;
+  justify-content: stretch;
+  background: #0a0a0a;
+  padding: 0;
+}
+
+.game-layout {
+  display: flex;
+  width: 100%; height: 100%;
+  overflow: hidden;
+}
+.game-layout.hidden { display: none !important; }
+
+/* ─── Canvas Area ────────────────────────────────────────────── */
+.game-canvas-area {
+  flex: 4;              /* ~80% */
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+}
+
+/* Phaser injects a <canvas> — let FIT mode control its size */
+.game-canvas-area canvas { display: block; }
+
+/* ─── HUD (Explorer) ─────────────────────────────────────────── */
+.hp-display {
+  position: absolute; top: 12px; left: 14px;
+  display: flex; gap: 5px; z-index: 20;
+  pointer-events: none;
+}
+.hp-heart {
+  font-size: 1.55rem;
+  transition: color 0.25s, text-shadow 0.25s;
+  line-height: 1;
+}
+.hp-full  { color: #ff4444; text-shadow: 0 0 8px rgba(255,68,68,0.6); }
+.hp-empty { color: #333; }
+
+.key-count {
+  position: absolute; top: 12px; right: 14px;
+  font-size: 1rem; color: #ffd700;
+  background: rgba(0,0,0,0.55); padding: 4px 11px;
+  border-radius: 20px; z-index: 20; pointer-events: none;
+  letter-spacing: 0.04em;
+}
+
+.controls-hint {
+  position: absolute; bottom: 10px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem; color: #3a3a5a; z-index: 20;
+  pointer-events: none; letter-spacing: 0.04em;
+}
+
+/* ─── Fusion Overlay ─────────────────────────────────────────── */
+.fusion-overlay {
+  position: absolute; inset: 0;
+  background: rgba(90,0,180,0.55);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 50;
+  animation: fusion-bg 2s ease-out;
+}
+.fusion-overlay.hidden { display: none !important; }
+
+.fusion-text {
+  font-size: 4.5rem; font-weight: 900;
+  color: #cc88ff; letter-spacing: 0.35em;
+  text-shadow: 0 0 50px rgba(200,120,255,1), 0 0 80px rgba(150,60,255,0.7);
+  animation: fusion-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.fusion-sub {
+  font-size: 1.15rem; color: #ddaaff;
+  margin-top: 14px; letter-spacing: 0.12em;
+  animation: fusion-fade 2s ease-out;
+}
+@keyframes fusion-bg {
+  0%   { background: rgba(90,0,180,0.85); }
+  40%  { background: rgba(90,0,180,0.35); }
+  100% { background: rgba(90,0,180,0.55); }
+}
+@keyframes fusion-pop {
+  0%   { transform: scale(0.3); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes fusion-fade {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  100% { opacity: 0.9; }
+}
+
+/* ─── Chat Panel ─────────────────────────────────────────────── */
+.chat-panel {
+  flex: 1;              /* ~20% */
+  display: flex; flex-direction: column;
+  background: #0c0c1c;
+  border-left: 1px solid #18182e;
+  min-width: 0;
+}
+#oracle-view .chat-panel {
+  border-left: none;
+  border-right: 1px solid #18182e;
+}
+
+.chat-role-badge {
+  padding: 10px 14px; flex-shrink: 0;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  border-bottom: 1px solid #18182e;
+}
+.explorer-badge { color: #00ff88; background: rgba(0,255,136,0.07); }
+.oracle-badge   { color: #aa88ff; background: rgba(170,136,255,0.07); }
+
+.chat-log {
+  flex: 1; overflow-y: auto;
+  padding: 8px 8px 4px;
+  display: flex; flex-direction: column; gap: 6px;
+  scrollbar-width: thin; scrollbar-color: #2a2a48 transparent;
+}
+.chat-log::-webkit-scrollbar       { width: 4px; }
+.chat-log::-webkit-scrollbar-track { background: transparent; }
+.chat-log::-webkit-scrollbar-thumb { background: #2a2a48; border-radius: 2px; }
+
+.chat-message {
+  padding: 5px 9px; border-radius: 6px;
+  font-size: 0.78rem; line-height: 1.45;
+  word-break: break-word;
+}
+.msg-explorer { background: rgba(0,255,136,0.07); border-left: 3px solid #00ff88; }
+.msg-oracle   { background: rgba(170,136,255,0.07); border-left: 3px solid #aa88ff; }
+
+.chat-from { font-weight: 700; margin-right: 6px; }
+.msg-explorer .chat-from { color: #00ff88; }
+.msg-oracle   .chat-from { color: #aa88ff; }
+.chat-text { color: #c0c0c0; }
+
+.chat-input-row {
+  display: flex; padding: 8px; gap: 6px;
+  border-top: 1px solid #18182e; flex-shrink: 0;
+}
+.chat-input-row input {
+  flex: 1; min-width: 0;
+  background: #0e0e22; border: 1px solid #28285a;
+  border-radius: 6px; padding: 7px 10px;
+  color: #e0e0e0; font-size: 0.78rem; outline: none;
+  -webkit-user-select: text; user-select: text;
+  transition: border-color 0.15s;
+}
+.chat-input-row input:focus { border-color: #4848a0; }
+
+.btn-chat {
+  padding: 7px 12px; background: #24245a; border: 1px solid #38388a;
+  border-radius: 6px; color: #8090ee; font-size: 0.72rem;
+  cursor: pointer; white-space: nowrap; transition: background 0.15s;
+}
+.btn-chat:hover { background: #34348a; }
+
+/* ─── Lever Panel (Oracle) ───────────────────────────────────── */
+.lever-panel {
+  position: absolute; bottom: 16px; right: 16px;
+  background: rgba(8,8,20,0.88);
+  border: 1px solid #3a2060;
+  border-radius: 12px;
+  padding: 12px 18px; z-index: 20;
+}
+.lever-title {
+  font-size: 0.65rem; color: #7a6a9a;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 11px; text-align: center;
+}
+.lever-buttons { display: flex; gap: 8px; }
+
+.lever-btn {
+  width: 54px; height: 54px;
+  background: #1e1e2e; border: 2px solid #444460;
+  border-radius: 9px; color: #888;
+  font-size: 1.05rem; font-weight: 800;
+  cursor: pointer; line-height: 1; text-align: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px;
+}
+.lever-btn:hover  { background: #2a2a40; border-color: #6666aa; color: #aaa; }
+.lever-btn.lever-on {
+  background: #2a1e00; border-color: #ffcc00; color: #ffcc00;
+  box-shadow: 0 0 14px rgba(255,204,0,0.45);
+}
+.lever-hint { display: block; font-size: 0.5rem; opacity: 0.85; font-weight: 400; }
+
+/* ─── Result Screens ─────────────────────────────────────────── */
+#screen-clear    { background: radial-gradient(ellipse at center, #060e06 0%, #0a0a0a 70%); }
+#screen-gameover { background: radial-gradient(ellipse at center, #120606 0%, #0a0a0a 70%); }
+
+.result-card {
+  background: rgba(8,16,8,0.94);
+  border: 1px solid #1a3a1a;
+  border-radius: 14px;
+  padding: 52px 64px; text-align: center;
+  max-width: 480px; width: 95vw;
+  box-shadow: 0 0 80px rgba(0,255,136,0.08);
+}
+#screen-gameover .result-card {
+  background: rgba(16,6,6,0.94);
+  border-color: #3a1010;
+  box-shadow: 0 0 80px rgba(255,68,68,0.08);
+}
+
+.result-icon  { font-size: 4.2rem; margin-bottom: 14px; line-height: 1; }
+.result-title {
+  font-size: 2.6rem; font-weight: 900;
+  letter-spacing: 0.1em; margin-bottom: 12px;
+}
+.clear-title    { color: #00ff88; text-shadow: 0 0 32px rgba(0,255,136,0.55); }
+.gameover-title { color: #ff4444; text-shadow: 0 0 32px rgba(255,68,68,0.55); }
+
+.result-subtitle { color: #7a8a7a; font-size: 0.9rem; margin-bottom: 22px; }
+.result-time     { font-size: 1.1rem; color: #aaa; margin-bottom: 30px; }
+.result-time span { font-weight: 700; color: #00ff88; }
+.result-card .btn-primary { max-width: 200px; margin: 0 auto; }
+
+/* ─── Disconnect Overlay ─────────────────────────────────────── */
+.overlay-card {
+  background: rgba(10,8,22,0.96);
+  border: 1px solid #3a2060;
+  border-radius: 14px;
+  padding: 42px 52px; text-align: center;
+  max-width: 400px; width: 95vw;
+  box-shadow: 0 0 60px rgba(102,0,204,0.2);
+}
+.overlay-card .result-icon { font-size: 3rem; }
+.overlay-card h2 { font-size: 1.4rem; color: #aa88ff; margin: 12px 0 8px; }
+.overlay-card p  { color: #7a6a9a; font-size: 0.9rem; margin-bottom: 26px; }
+
+/* ─── 모바일 D-패드 ──────────────────────────────────────────── */
+.dpad {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(3, 54px);
+  grid-template-rows: repeat(3, 54px);
+  gap: 5px;
+  z-index: 30;
+  /* 채팅 패널과 겹치지 않도록 왼쪽으로 약간 오프셋 (chat-panel flex:1 ~20%) */
+}
+
+.dpad-up    { grid-column: 2; grid-row: 1; }
+.dpad-left  { grid-column: 1; grid-row: 2; }
+.dpad-right { grid-column: 3; grid-row: 2; }
+.dpad-down  { grid-column: 2; grid-row: 3; }
+
+.dpad-btn {
+  width: 54px; height: 54px;
+  background: rgba(0, 0, 0, 0.62);
+  border: 2px solid #3a3a60;
+  border-radius: 11px;
+  color: #7777bb;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  touch-action: manipulation;      /* 더블탭 줌 방지 */
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background 0.08s, border-color 0.08s, color 0.08s;
+}
+.dpad-btn:active {
+  background: rgba(102, 0, 204, 0.52);
+  border-color: #9966dd;
+  color: #cc99ff;
+}
+
+/* 데스크탑(정밀 포인터)에서는 D-패드 숨김, 키보드 힌트 표시 */
+@media (pointer: fine) {
+  .dpad { display: none; }
+}
+
+/* 모바일(조잡한 포인터)에서는 키보드 힌트 숨김 */
+@media (pointer: coarse) {
+  .controls-hint { display: none; }
+}
+
+/* ─── Oracle HUD (Explorer 상태 표시) ────────────────────────── */
+.oracle-hud {
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  background: rgba(0,0,0,0.7); border: 1px solid #6600cc;
+  border-radius: 8px; padding: 4px 14px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; color: #fff; z-index: 20; pointer-events: none;
+  white-space: nowrap;
+}
+.oracle-hud-label { color: #cc88ff; font-size: 11px; }
+#oracle-hp .hp-full  { color: #ff4444; }
+#oracle-hp .hp-empty { color: #444; }
+
+/* 인게임 타이머 */
+.timer-display {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  font-size: 1rem; font-weight: 700; color: #aaaacc;
+  background: rgba(0,0,0,0.55); padding: 4px 13px;
+  border-radius: 20px; z-index: 20; pointer-events: none;
+  font-family: monospace; letter-spacing: 0.06em;
+}
+.timer-display-oracle {
+  font-size: 13px; color: #8888bb; font-family: monospace;
+}
+
+/* 역할 인트로 오버레이 */
+.role-intro-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(5, 2, 15, 0.85);
+  display: flex; align-items: center; justify-content: center;
+  animation: role-fadein 0.4s ease-out;
+}
+.role-intro-overlay.hidden { display: none !important; }
+.role-intro-card {
+  text-align: center;
+  animation: role-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.role-intro-icon { font-size: 4rem; margin-bottom: 12px; }
+.role-intro-name {
+  font-size: 2rem; font-weight: 900; letter-spacing: 0.12em;
+  color: #aa88ff; text-shadow: 0 0 30px rgba(170,136,255,0.8);
+  margin-bottom: 14px;
+}
+.role-intro-desc { font-size: 1rem; color: #8888aa; max-width: 380px; line-height: 1.6; }
+@keyframes role-fadein { from { opacity: 0; } to { opacity: 1; } }
+@keyframes role-pop    { from { transform: scale(0.6) translateY(30px); opacity: 0; }
+                          to   { transform: scale(1) translateY(0); opacity: 1; } }
